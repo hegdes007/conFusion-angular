@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import 'hammerjs';
 
@@ -21,9 +22,20 @@ import { FooterComponent } from './footer/footer.component';
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { ContactComponent } from './contact/contact.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
-  declarations: [AppComponent, MenuComponent, DishdetailComponent, HeaderComponent, FooterComponent, AboutComponent, HomeComponent, ContactComponent],
+  declarations: [
+    AppComponent,
+    MenuComponent,
+    DishdetailComponent,
+    HeaderComponent,
+    FooterComponent,
+    AboutComponent,
+    HomeComponent,
+    ContactComponent,
+    LoginComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -34,8 +46,10 @@ import { ContactComponent } from './contact/contact.component';
     MatCardModule,
     MatButtonModule,
     FlexLayoutModule,
+    MatDialogModule,
   ],
   providers: [DishService],
   bootstrap: [AppComponent],
+  entryComponents: [LoginComponent],
 })
 export class AppModule {}
