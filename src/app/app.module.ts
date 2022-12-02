@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HttpClientModule } from '@angular/common/http';
 
 import 'hammerjs';
 
@@ -32,6 +33,7 @@ import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { ContactComponent } from './contact/contact.component';
 import { LoginComponent } from './login/login.component';
+import { baseURL } from './shared/baseUrl';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { LoginComponent } from './login/login.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatToolbarModule,
     MatListModule,
     MatGridListModule,
@@ -66,7 +69,7 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
   ],
-  providers: [DishService],
+  providers: [DishService, { provide: 'baseURL', useValue: baseURL }],
   bootstrap: [AppComponent],
   entryComponents: [LoginComponent],
 })
