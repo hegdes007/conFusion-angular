@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { Dish } from '../shared/dish';
-import { Comment } from '../shared/comment';
-import { DishService } from '../services/dish.service';
-import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { switchMap } from 'rxjs/operators';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Params } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { DishService } from '../services/dish.service';
+import { Comment } from '../shared/comment';
+import { Dish } from '../shared/dish';
 
 @Component({
   selector: 'app-dishdetail',
@@ -17,6 +17,7 @@ export class DishdetailComponent implements OnInit {
   commentFormDirective!: { resetForm: () => void };
   commentForm!: FormGroup;
   comment!: Comment;
+  errMess: any;
 
   formErrors: any = {
     author: '',
@@ -48,6 +49,7 @@ export class DishdetailComponent implements OnInit {
   dishIds!: string[];
   prev!: string;
   next!: string;
+  dishcopy!: Dish;
 
   ngOnInit(): void {
     this.dishService
@@ -59,6 +61,7 @@ export class DishdetailComponent implements OnInit {
       )
       .subscribe((dish) => {
         this.dish = dish;
+        this.dishcopy = dish;
         this.setPrevNext(dish.id);
       });
   }
@@ -91,6 +94,19 @@ export class DishdetailComponent implements OnInit {
       this.onValueChanged(data)
     );
 
+    this.route.params
+      .pipe(
+        switchMap((params: Params) => this.dishService.getDish(params['id']))
+      )
+      .subscribe(
+        (dish) => {
+          this.dish = dish;
+          this.dishcopy = dish;
+          this.setPrevNext(dish.id);
+        },
+        (errmess) => (this.errMess = <any>errmess)
+      );
+
     this.onValueChanged(); // (re)set validation messages now
   }
 
@@ -104,7 +120,19 @@ export class DishdetailComponent implements OnInit {
       comment: '',
       rating: 5,
     });
+    this.dishService.putDish(this.dishcopy).subscribe(
+      (dish) => {
+        this.dish = dish;
+        this.dishcopy = dish;
+      },
+      (errmess) => {
+        // this.dish = null;
+        // this.dishcopy = null;
+        this.errMess = <any>errmess;
+      }
+    );
     this.commentFormDirective.resetForm();
+    this.dishcopy.comments.push(this.comment);
   }
   onValueChanged(data?: any) {
     if (!this.commentForm) {
