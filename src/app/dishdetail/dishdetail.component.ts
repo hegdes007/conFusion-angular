@@ -6,11 +6,17 @@ import { switchMap } from 'rxjs/operators';
 import { DishService } from '../services/dish.service';
 import { Comment } from '../shared/comment';
 import { Dish } from '../shared/dish';
+import { expand, flyInOut, visibility } from '../animations/app.animations';
 
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
   styleUrls: ['./dishdetail.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    style: 'display: block;',
+  },
+  animations: [visibility(), flyInOut(), expand()],
 })
 export class DishdetailComponent implements OnInit {
   @ViewChild('fForm')
@@ -50,6 +56,7 @@ export class DishdetailComponent implements OnInit {
   prev!: string;
   next!: string;
   dishcopy!: Dish;
+  visibility = 'shown';
 
   ngOnInit(): void {
     this.dishService
@@ -96,13 +103,17 @@ export class DishdetailComponent implements OnInit {
 
     this.route.params
       .pipe(
-        switchMap((params: Params) => this.dishService.getDish(params['id']))
+        switchMap((params: Params) => {
+          this.visibility = 'hidden';
+          return this.dishService.getDish(+params['id']);
+        })
       )
       .subscribe(
         (dish) => {
           this.dish = dish;
           this.dishcopy = dish;
           this.setPrevNext(dish.id);
+          this.visibility = 'shown';
         },
         (errmess) => (this.errMess = <any>errmess)
       );
